@@ -1,0 +1,26 @@
+{
+  "name": "daily-word-quest",
+  "version": "1.0.0",
+  "description": "Daily Word Quest - Google Calendar integrated English vocabulary learning PWA for kids",
+  "main": "index.html",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "dev": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "verify": "node scripts/verify-deployment.js",
+    "test": "node scripts/test-rewards.js",
+    "serve": "node scripts/serve.js",
+    "serve:dist": "npx serve dist -l 3000"
+  },
+  "keywords": [
+    "pwa",
+    "google-calendar-api",
+    "kids-education",
+    "vocabulary-quest"
+  ],
+  "author": "Noah Word Quest Team",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.4"
+  }
+}

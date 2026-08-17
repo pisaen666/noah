@@ -1,0 +1,21 @@
+{
+  "name": "โนอาห์ คำศัพท์รายวัน - Daily Word Quest",
+  "short_name": "Noah Quest",
+  "description": "แอปฝึกฝนและผจญภัยกับคำศัพท์ภาษาอังกฤษ 15 คำต่อวัน เชื่อมต่อกับ Google Calendar",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#131313",
+  "theme_color": "#00a2ff",
+  "orientation": "portrait-primary",
+  "lang": "th",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

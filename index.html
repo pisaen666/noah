@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<!--
+  =============================================================================
+  Daily Word Quest — index.html
+  =============================================================================
+  This is the main entry point for the app.
+  Based on the Google Stitch design export (stitch_daily_word_quest_interface/code.html)
+  with the following additions for Google Calendar API integration:
+
+  Changes from code.html:
+  - Added `id="app-overlays"` mount point for auth/quiz/error modals
+  - Added `id="mission-start-btn"` on the mission button for JS targeting
+  - Added `id="dwq-signout-btn"` in the Settings nav tab
+  - Added `<script type="module" src="./src/app.js">` at the end of body
+  =============================================================================
+-->
+
+<html class="dark" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0" name="viewport"/>
+<meta name="description" content="โนอาห์ฝ่าด่านมหาประลัย — แอปเรียนคำศัพท์ภาษาอังกฤษ 15 คำต่อวัน เชื่อมต่อกับ Google Calendar"/>
+<title>โนอาห์ฝ่าด่านมหาประลัย: 15 คำศัพท์รายวัน - Mission Board</title>
+
+<!-- PWA Manifest & Icons -->
+<link rel="manifest" href="./manifest.json"/>
+<meta name="theme-color" content="#00a2ff"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Noah Quest"/>
+<link rel="icon" type="image/svg+xml" href="./icons/icon.svg"/>
+<link rel="apple-touch-icon" href="./icons/icon.svg"/>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "inverse-primary": "#00629d",
+                "surface-dim": "#131313",
+                "on-secondary-container": "#006015",
+                "outline": "#89919d",
+                "on-secondary-fixed-variant": "#005311",
+                "on-primary-fixed-variant": "#004a78",
+                "on-error": "#690005",
+                "secondary-fixed-dim": "#00e540",
+                "error-container": "#93000a",
+                "surface-container-high": "#2a2a2a",
+                "tertiary": "#ffb4ab",
+                "surface-variant": "#353534",
+                "on-primary-container": "#003659",
+                "primary": "#99cbff",
+                "primary-fixed-dim": "#99cbff",
+                "surface-container-lowest": "#0e0e0e",
+                "surface-bright": "#3a3939",
+                "on-surface": "#e5e2e1",
+                "secondary-container": "#00e540",
+                "on-error-container": "#ffdad6",
+                "on-background": "#e5e2e1",
+                "tertiary-fixed": "#ffdad6",
+                "on-tertiary-container": "#6e0005",
+                "secondary-fixed": "#71ff74",
+                "on-tertiary-fixed": "#410002",
+                "on-primary-fixed": "#001d34",
+                "surface-container-highest": "#353534",
+                "primary-container": "#00a2ff",
+                "surface": "#131313",
+                "on-surface-variant": "#bec7d4",
+                "secondary": "#71ff74",
+                "inverse-surface": "#e5e2e1",
+                "primary-fixed": "#cfe5ff",
+                "on-tertiary-fixed-variant": "#93000a",
+                "on-tertiary": "#690005",
+                "error": "#ffb4ab",
+                "background": "#131313",
+                "tertiary-fixed-dim": "#ffb4ab",
+                "on-secondary": "#003909",
+                "surface-container": "#201f1f",
+                "tertiary-container": "#ff6d60",
+                "surface-container-low": "#1c1b1b",
+                "outline-variant": "#3f4852",
+                "inverse-on-surface": "#313030",
+                "on-secondary-fixed": "#002203",
+                "surface-tint": "#99cbff",
+                "on-primary": "#003355"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "gutter": "16px",
+                "stack-sm": "8px",
+                "unit": "4px",
+                "margin-mobile": "16px",
+                "stack-md": "16px",
+                "stack-lg": "32px",
+                "margin-desktop": "32px"
+        },
+        "fontFamily": {
+                "label-bold": [
+                        "Noto Sans Thai",
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Noto Sans Thai",
+                        "Montserrat"
+                ],
+                "headline-lg": [
+                        "Noto Sans Thai",
+                        "Montserrat"
+                ],
+                "headline-md": [
+                        "Noto Sans Thai",
+                        "Montserrat"
+                ],
+                "headline-xl": [
+                        "Noto Sans Thai",
+                        "Montserrat"
+                ],
+                "body-lg": [
+                        "Noto Sans Thai",
+                        "Inter"
+                ],
+                "body-md": [
+                        "Noto Sans Thai",
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "label-bold": [
+                        "14px",
+                        {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "800"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "800"
+                        }
+                ],
+                "headline-md": [
+                        "20px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-xl": [
+                        "40px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "900"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .pulse-glow {
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.4), 0 0 20px rgba(0, 162, 255, 0.2); }
+            100% { box-shadow: 0 0 25px rgba(0, 162, 255, 0.8), 0 0 40px rgba(0, 162, 255, 0.4); }
+        }
+        .path-line {
+            position: absolute;
+            z-index: 0;
+            border-left: 4px dashed #00bdfd;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md pb-stack-lg">
+<!-- TopAppBar Component -->
+<header class="w-full top-0 sticky z-50 shadow-sm bg-surface-container-low flex justify-between items-center px-margin-mobile py-stack-sm w-full border-b border-surface-container-high">
+<div class="flex items-center gap-stack-sm truncate">
+<div class="w-10 h-10 shrink-0 rounded bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-primary-container shadow-md">
+<img class="w-full h-full object-cover" alt="Fox character avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlG_r1ilVK0ZFcqpW7lS3zJenzPHWd8YbeHFJWgN4LOjyQKpTe2jkSxRU_-z_efMxWIYNuH3fZF88DuAOlDOBNdddicTfNWyuVNRCIDPG3Jt7bRky6mzjwlnal7WhMjQcOXWu_d45XQpGGAqlkSzbPcLOCE8FCkgvKk6tnE4D4M-DacQoiF9ETwM_p_Bi3a0gck-2pp_fLEqn12GuT0_l3WuZbyKZF0bLD4atdZfs4t--Q5CnHFbL1pA"/>
+</div>
+<h1 class="font-headline-lg-mobile text-[16px] sm:text-headline-lg-mobile text-on-background font-bold tracking-tight truncate">โนอาห์ฝ่าด่านมหาประลัย: 15 คำศัพท์รายวัน</h1>
+</div>
+<div class="flex items-center gap-stack-sm shrink-0 ml-2">
+  <!-- Stars Counter Badge -->
+  <div id="header-stars-badge" class="flex items-center gap-1 font-label-bold text-label-bold bg-surface-container-highest text-on-surface px-stack-sm py-unit rounded shadow-md border-b-2 border-surface-variant cursor-pointer hover:border-primary-container transition" title="ดาวทองสะสม">
+    <span class="material-symbols-outlined text-[#ffd700] text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+    <span id="header-stars-val">0</span>
+  </div>
+  <!-- Streak Counter Badge -->
+  <div id="header-streak-badge" class="flex items-center gap-1 font-label-bold text-label-bold bg-surface-container-highest text-on-surface px-stack-sm py-unit rounded shadow-md border-b-2 border-surface-variant" title="การเรียนติดต่อกัน (Streak)">
+    <span class="material-symbols-outlined text-primary-container text-[18px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+    <span id="header-streak-val">0</span>
+  </div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow relative px-margin-mobile py-stack-lg overflow-hidden flex flex-col items-center w-full max-w-3xl mx-auto">
+<!-- Decorative Background Elements -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-20" style="background-image: radial-gradient(circle at 20% 30%, #00a2ff 0%, transparent 40%), radial-gradient(circle at 80% 70%, #00e540 0%, transparent 40%);"></div>
+
+<!-- TAB 1: QUEST MAP VIEW -->
+<section id="tab-content-map" class="relative z-10 w-full max-w-md flex flex-col items-center gap-stack-lg mt-stack-md transition-all duration-200">
+
+<!-- Path Node: Monday (Completed) -->
+<div class="relative flex items-center justify-start w-full px-stack-lg group cursor-pointer hover:scale-105 transition-transform">
+<div class="w-16 h-16 rounded bg-secondary-container border-b-4 border-r-4 border-on-secondary-container shadow-[0_4px_10px_rgba(0,229,64,0.3)] flex items-center justify-center z-10 relative">
+<span class="material-symbols-outlined text-on-surface text-headline-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="absolute -bottom-6 font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">จันทร์</div>
+</div>
+<!-- Line to next -->
+<div class="absolute left-[calc(40px+2rem)] top-16 w-[2px] h-20 border-l-4 border-dashed border-secondary-container z-0 ml-4"></div>
+</div>
+<!-- Path Node: Tuesday (Completed) -->
+<div class="relative flex items-center justify-end w-full px-stack-lg group cursor-pointer hover:scale-105 transition-transform mt-stack-md">
+<!-- Line from prev -->
+<svg class="absolute top-[-3rem] left-1/2 w-1/2 h-20 z-0" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 0,0 C 50,0 50,100 100,100" fill="none" stroke="#00e540" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+<div class="w-16 h-16 rounded bg-secondary-container border-b-4 border-r-4 border-on-secondary-container shadow-[0_4px_10px_rgba(0,229,64,0.3)] flex items-center justify-center z-10 relative">
+<span class="material-symbols-outlined text-on-surface text-headline-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="absolute -bottom-6 font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">อังคาร</div>
+</div>
+</div>
+<!-- Path Node: Wednesday (Completed) -->
+<div class="relative flex items-center justify-start w-full px-stack-lg group cursor-pointer hover:scale-105 transition-transform mt-stack-md">
+<!-- Line from prev -->
+<svg class="absolute top-[-3rem] right-1/2 w-1/2 h-20 z-0" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 100,0 C 50,0 50,100 0,100" fill="none" stroke="#00e540" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+<div class="w-16 h-16 rounded bg-secondary-container border-b-4 border-r-4 border-on-secondary-container shadow-[0_4px_10px_rgba(0,229,64,0.3)] flex items-center justify-center z-10 relative">
+<span class="material-symbols-outlined text-on-surface text-headline-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="absolute -bottom-6 font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">พุธ</div>
+</div>
+</div>
+<!-- Path Node: Thursday (Today / Active) -->
+<div class="relative flex flex-col items-center justify-center w-full mt-stack-lg mb-stack-lg z-20">
+<!-- Line from prev -->
+<svg class="absolute top-[-4rem] left-1/4 w-1/2 h-24 z-0" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 0,0 C 50,20 50,100 100,100" fill="none" stroke="#00a2ff" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+
+<!-- Character Guide Speech Bubble (Yellow Theme) positioned right above mission button -->
+<div id="character-speech-container" class="w-full max-w-xs sm:max-w-sm flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-surface-container border-2 border-surface-container-high shadow-lg transition-all duration-300 mb-3">
+  <div class="w-11 h-11 shrink-0 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden border-2 border-primary-container shadow-md">
+    <img class="w-full h-full object-cover" alt="Fox character avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlG_r1ilVK0ZFcqpW7lS3zJenzPHWd8YbeHFJWgN4LOjyQKpTe2jkSxRU_-z_efMxWIYNuH3fZF88DuAOlDOBNdddicTfNWyuVNRCIDPG3Jt7bRky6mzjwlnal7WhMjQcOXWu_d45XQpGGAqlkSzbPcLOCE8FCkgvKk6tnE4D4M-DacQoiF9ETwM_p_Bi3a0gck-2pp_fLEqn12GuT0_l3WuZbyKZF0bLD4atdZfs4t--Q5CnHFbL1pA"/>
+  </div>
+  <div class="relative flex-grow">
+    <!-- Yellow Speech Bubble -->
+    <div id="character-speech-bubble" class="relative bg-[#ffd700] text-[#1c1b1b] px-3 py-2 rounded-xl font-headline-md text-[13px] sm:text-[14px] font-black shadow-[3px_3px_0px_#000000] border-2 border-[#b29500] leading-snug">
+      <!-- Tail pointing left to avatar -->
+      <div class="absolute top-1/2 -left-2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-[#ffd700] border-b-[6px] border-b-transparent"></div>
+      <span id="character-speech-text">อ๊ะ ๆ  โนอาห์วันนี้ได้เวลาปฏิบัติภารกิจแล้วนะ..ลงมือทำเลย</span>
+    </div>
+  </div>
+</div>
+
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-primary-container mb-stack-sm animate-bounce font-black text-center">ภารกิจวันนี้!</div>
+<!--
+  🔌 INTEGRATION POINT: id="mission-start-btn"
+  This button is now controlled by src/ui.js via the handleMissionClick handler.
+-->
+<button
+  id="mission-start-btn"
+  class="w-full max-w-xs bg-primary-container text-on-surface rounded p-stack-md flex flex-col items-center justify-center gap-stack-sm border-b-8 border-r-4 border-on-primary-container active:translate-y-2 active:border-b-0 active:border-r-0 transition-all pulse-glow cursor-pointer"
+>
+<span class="material-symbols-outlined text-[48px] text-on-surface" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-headline-md text-headline-md font-black text-center">เริ่มภารกิจ 15 คำศัพท์</span>
+</button>
+</div>
+<!-- Path Node: Friday (Future) -->
+<div class="relative flex items-center justify-end w-full px-stack-lg mt-stack-md opacity-50 grayscale-[50%]">
+<!-- Line from active -->
+<svg class="absolute top-[-4rem] right-1/4 w-1/4 h-24 z-0" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 0,0 C 50,0 80,100 100,100" fill="none" stroke="#353534" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+<div class="w-14 h-14 rounded bg-surface-variant border-b-4 border-r-4 border-outline shadow-sm flex items-center justify-center z-10 relative">
+<span class="material-symbols-outlined text-outline">lock</span>
+<div class="absolute -bottom-6 font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">ศุกร์</div>
+</div>
+</div>
+<!-- Path Node: Saturday (Future) -->
+<div class="relative flex items-center justify-center w-full px-stack-lg mt-stack-lg opacity-50 grayscale-[50%]">
+<!-- Line from active -->
+<svg class="absolute top-[-3rem] right-1/4 w-1/4 h-20 z-0" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 100,0 C 50,0 50,100 0,100" fill="none" stroke="#353534" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+<div class="w-14 h-14 rounded bg-surface-variant border-b-4 border-r-4 border-outline shadow-sm flex items-center justify-center z-10 relative">
+<span class="material-symbols-outlined text-outline">lock</span>
+<div class="absolute -bottom-6 font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">เสาร์</div>
+</div>
+</div>
+</section>
+
+<!-- TAB 2: REWARDS & COLLECTION SHELF VIEW -->
+<section id="tab-content-rewards" class="relative z-10 w-full max-w-xl hidden flex-col items-center gap-stack-lg mt-stack-sm transition-all duration-200">
+  <div id="rewards-view-container" class="w-full flex flex-col gap-stack-md">
+    <!-- Rendered dynamically by src/ui.js -->
+  </div>
+</section>
+
+</main>
+<!-- BottomNavBar Component -->
+<nav id="bottom-navbar" class="md:hidden fixed bottom-0 left-0 w-full h-[80px] flex justify-around items-center px-gutter pb-safe bg-surface shadow-[0_-4px_10px_rgba(0,0,0,0.5)] bg-surface-container-highest rounded-t z-50 pt-stack-sm border-t-2 border-surface-variant">
+<!-- Tab: Map -->
+<button id="nav-tab-map" class="flex flex-col items-center justify-center bg-primary-container text-on-surface rounded px-stack-md py-unit translate-y-[-4px] border-b-4 border-on-primary-container transition-all duration-100 ease-out active:translate-y-0 active:border-b-0 cursor-pointer" aria-label="แผนที่">
+<span class="material-symbols-outlined font-label-bold text-label-bold" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-bold text-label-bold mt-unit">แผนที่</span>
+</button>
+<!-- Tab: Rewards -->
+<button id="nav-tab-rewards" class="flex flex-col items-center justify-center text-on-surface-variant px-stack-md py-unit transition-all duration-100 ease-out active:translate-y-1 hover:bg-surface-variant hover:text-on-surface rounded cursor-pointer" aria-label="ของรางวัล">
+<span class="material-symbols-outlined font-label-bold text-label-bold">redeem</span>
+<span class="font-label-bold text-label-bold mt-unit">ของรางวัล</span>
+</button>
+<!-- Tab: Settings -->
+<button id="nav-tab-settings" class="flex flex-col items-center justify-center text-on-surface-variant px-stack-md py-unit transition-all duration-100 ease-out active:translate-y-1 hover:bg-surface-variant hover:text-on-surface rounded cursor-pointer" aria-label="ตั้งค่า" title="การตั้งค่าสำหรับผู้ปกครอง">
+<span class="material-symbols-outlined font-label-bold text-label-bold">settings</span>
+<span class="font-label-bold text-label-bold mt-unit">ตั้งค่า</span>
+</button>
+</nav>
+<!-- Desktop Nav (top bar on desktop) -->
+<nav class="hidden md:flex fixed top-0 right-margin-desktop h-[57px] items-center gap-stack-sm z-[60]">
+  <button id="desktop-tab-map" class="flex items-center gap-2 px-3 py-1.5 rounded font-label-bold text-sm text-on-surface bg-primary-container border-b-2 border-on-primary-container hover:bg-primary-container/90 transition cursor-pointer">
+    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">map</span>
+    <span>แผนที่</span>
+  </button>
+  <button id="desktop-tab-rewards" class="flex items-center gap-2 px-3 py-1.5 rounded font-label-bold text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition cursor-pointer">
+    <span class="material-symbols-outlined text-[18px]">redeem</span>
+    <span>ของรางวัล</span>
+  </button>
+  <button id="desktop-tab-settings" class="flex items-center gap-2 px-3 py-1.5 rounded font-label-bold text-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition cursor-pointer">
+    <span class="material-symbols-outlined text-[18px]">settings</span>
+    <span>ตั้งค่า</span>
+  </button>
+</nav>
+
+
+<!--
+  =============================================================================
+  🔌 INTEGRATION: Overlay Mount Point
+  All auth/quiz/error modals are injected here by src/ui.js
+  =============================================================================
+-->
+<div id="app-overlays" aria-live="polite" aria-atomic="true"></div>
+
+<!--
+  =============================================================================
+  🔌 INTEGRATION: App Entry Point (ES Module)
+  Must be type="module" to support ES Module imports in src/
+  =============================================================================
+-->
+<script type="module" src="./src/app.js"></script>
+
+</body></html>
